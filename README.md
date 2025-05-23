@@ -8,7 +8,5 @@ Automation pipeline for auto detection of cyberattacks.
 
 2. pip install -r requirements.txt
 
-3. Set API keys/credentials in config.py
-
-4. Run: python3 main_pipeline.py
+3. Run: python3 pipeline_orchestrator.py
 >>>>>>> 365b4b9 (Initial commit of automation pipeline scripts)

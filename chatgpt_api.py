@@ -17,7 +17,7 @@ def generate_wazuh_rule(nl_attack=None, logs=None):
     else:
         raise ValueError("Must provide nl_attack or logs.")
     response = openai.ChatCompletion.create(
-        model="gpt-4o",  # Use the latest
+        model="gpt-4.1",  # Use the latest
         messages=[{"role": "system", "content": "You are a cybersecurity analyst specializing in SIEM rule creation."},
                   {"role": "user", "content": prompt}],
         max_tokens=800

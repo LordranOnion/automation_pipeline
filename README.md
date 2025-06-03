@@ -10,3 +10,5 @@ Automation pipeline for auto detection of cyberattacks.
 
 3. Run: python3 pipeline_orchestrator.py
 >>>>>>> 365b4b9 (Initial commit of automation pipeline scripts)
+
+If you want to change the .env data, I have an additional file included, which is named env.example.

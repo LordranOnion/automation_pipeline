@@ -1,5 +1,6 @@
 import requests
 import urllib3
+from requests.auth import HTTPBasicAuth
 from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # annoying warning, ignore
@@ -8,7 +9,7 @@ def wazuh_authenticate():
     # quick login, gets bearer token
     url = f"{WAZUH_URL}/security/user/authenticate"
     try:
-        r = requests.post(url, json={"username": WAZUH_USER, "password": WAZUH_PASS}, verify=False)
+        r = requests.post(url, auth=HTTPBasicAuth(WAZUH_USER, WAZUH_PASS), verify=False)
         r.raise_for_status()
         d = r.json()
         return d["data"]["token"] if "data" in d and "token" in d["data"] else None

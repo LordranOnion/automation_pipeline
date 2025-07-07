@@ -1,13 +1,15 @@
 # wazuh_api.py
 import requests
 import urllib3
+from requests.auth import HTTPBasicAuth
 from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def wazuh_authenticate():
     url = f"{WAZUH_URL}/security/user/authenticate"
-    response = requests.post(url, json={"username": WAZUH_USER, "password": WAZUH_PASS}, verify=False)
+    # Use HTTP Basic Auth, no JSON body!
+    response = requests.post(url, auth=HTTPBasicAuth(WAZUH_USER, WAZUH_PASS), verify=False)
     response.raise_for_status()
     return response.json()["data"]["token"]
 

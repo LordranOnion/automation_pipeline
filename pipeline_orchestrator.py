@@ -1,4 +1,4 @@
-from chatgpt_api import generate_wazuh_rule
+from ollama_api import generate_wazuh_rule
 from wazuh_api import wazuh_authenticate, upload_wazuh_rule, fetch_wazuh_logs
 from caldera_api import launch_attack, wait_for_attack_completion
 
@@ -7,7 +7,7 @@ def pipeline_loop(nl_attack, caldera_attack_id="atomic_attack", cycles=5):
     token = wazuh_authenticate()
 
     # Step 1: Generate initial rule from NL description
-    print("Generating initial rule via ChatGPT...")
+    print("Generating initial rule via LLM...")
     rule_xml = generate_wazuh_rule(nl_attack=nl_attack)
     print("Generated rule:", rule_xml[:300], '...')
     print("Uploading rule to Wazuh...")
@@ -21,7 +21,7 @@ def pipeline_loop(nl_attack, caldera_attack_id="atomic_attack", cycles=5):
         wait_for_attack_completion(adv_id)
         print("Fetching logs from Wazuh...")
         logs = fetch_wazuh_logs(token, limit=50)
-        print("Generating new rule via ChatGPT from logs...")
+        print("Generating new rule via LLM from logs...")
         rule_xml = generate_wazuh_rule(logs=logs)
         print("Uploading rule to Wazuh...")
         upload_wazuh_rule(rule_xml, token)

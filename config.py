@@ -5,7 +5,8 @@ import os
 # Load variables from .env file
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OLLAMA_URL = os.getenv("OLLAMA_URL")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
 WAZUH_URL = os.getenv("WAZUH_URL")
 WAZUH_USER = os.getenv("WAZUH_USER")

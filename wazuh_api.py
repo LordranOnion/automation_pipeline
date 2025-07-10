@@ -1,6 +1,7 @@
 # wazuh_api.py
 import requests
 import urllib3
+import subprocess
 from requests.auth import HTTPBasicAuth
 from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS
 
@@ -13,12 +14,13 @@ def wazuh_authenticate():
     response.raise_for_status()
     return response.json()["data"]["token"]
 
-def upload_wazuh_rule(rule_xml, token):
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/xml"}
-    url = f"{WAZUH_URL}/ruleset/rules?pretty=true"
-    response = requests.post(url, data=rule_xml.encode('utf-8'), headers=headers, verify=False)
-    response.raise_for_status()
-    return response.json()
+def upload_wazuh_rule(rule_xml):
+    # Write to the local_rules.xml (append or overwrite as you need)
+    with open("/var/ossec/etc/rules/local_rules.xml", "a") as f:
+        f.write("\n" + rule_xml + "\n")
+    # Reload or restart wazuh-manager to apply the new rule
+    # subprocess.run(["systemctl", "reload", "wazuh-manager"])
+
 
 def fetch_wazuh_logs(token, limit=50):
     headers = {"Authorization": f"Bearer {token}"}

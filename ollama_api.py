@@ -24,7 +24,7 @@ def generate_wazuh_rule(nl_attack=None, logs=None):
         "stream": False  # If True, handle the response as a stream (optional)
     }
 
-    response = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=120)
+    response = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=3600)
     response.raise_for_status()
 
     result = response.json()

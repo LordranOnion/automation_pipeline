@@ -11,7 +11,7 @@ def pipeline_loop(nl_attack, caldera_attack_id="atomic_attack", cycles=5):
     rule_xml = generate_wazuh_rule(nl_attack=nl_attack)
     print("Generated rule:", rule_xml[:300], '...')
     print("Uploading rule to Wazuh...")
-    upload_wazuh_rule(rule_xml, token)
+    upload_wazuh_rule(rule_xml)
 
     for cycle in range(1, cycles + 1):
         print(f"\n--- Cycle {cycle} ---")
@@ -24,7 +24,7 @@ def pipeline_loop(nl_attack, caldera_attack_id="atomic_attack", cycles=5):
         print("Generating new rule via LLM from logs...")
         rule_xml = generate_wazuh_rule(logs=logs)
         print("Uploading rule to Wazuh...")
-        upload_wazuh_rule(rule_xml, token)
+        upload_wazuh_rule(rule_xml)
 
     print("Pipeline completed.")
 

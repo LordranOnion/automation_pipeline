@@ -14,12 +14,17 @@ def wazuh_authenticate():
     response.raise_for_status()
     return response.json()["data"]["token"]
 
-def upload_wazuh_rule(rule_xml):
-    # Write to the local_rules.xml (append or overwrite as you need)
-    with open("/var/ossec/etc/rules/local_rules.xml", "a") as f:
-        f.write("\n" + rule_xml + "\n")
-    # Reload or restart wazuh-manager to apply the new rule
-    # subprocess.run(["systemctl", "reload", "wazuh-manager"])
+def upload_wazuh_rule(rule_xml, token, filename="custom_rules.xml"):
+    url = f"{WAZUH_URL}/rules/files/{filename}"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/octet-stream"
+    }
+    # For self-signed SSL, set verify=False. Set to True in production!
+    response = requests.put(url, data=rule_xml.encode('utf-8'), headers=headers, verify=False)
+    response.raise_for_status()
+    print(f"Rule uploaded to {url}: {response.status_code}")
+    return response.json()
 
 
 def fetch_wazuh_logs(token, limit=50):

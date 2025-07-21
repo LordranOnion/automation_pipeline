@@ -3,7 +3,7 @@ import requests
 import urllib3
 import subprocess
 from requests.auth import HTTPBasicAuth
-from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS
+from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS, WAZUH_INDEXER_URL, WAZUH_INDEXER_USER, WAZUH_INDEXER_PASS
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -20,17 +20,35 @@ def upload_wazuh_rule(rule_xml, token, filename="custom_rules.xml"):
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/octet-stream"
     }
-    # For self-signed SSL, set verify=False. Set to True in production!
     response = requests.put(url, data=rule_xml.encode('utf-8'), headers=headers, verify=False)
     response.raise_for_status()
     print(f"Rule uploaded to {url}: {response.status_code}")
     return response.json()
 
 
-def fetch_wazuh_logs(token, limit=50):
-    headers = {"Authorization": f"Bearer {token}"}
-    url = f"{WAZUH_URL}/security/events?limit={limit}&sort=desc"
-    response = requests.get(url, headers=headers, verify=False)
+def fetch_wazuh_logs(limit=50):
+    indexer_username = "admin"
+    indexer_password = "b7WJQD6gnedEuVQICR*T93cVWW7s7BQu"
+    
+    url = f"{WAZUH_INDEXER_URL}/wazuh-alerts*/_search"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    query = {
+        "size": limit,
+        "sort": [
+            {"timestamp": {"order": "desc"}}
+        ]
+    }
+    response = requests.get(
+        url, headers=headers, json=query, verify=False,
+        auth=HTTPBasicAuth(indexer_username, indexer_password)
+    )
     response.raise_for_status()
-    logs = [event["full_log"] for event in response.json()["data"]["affected_items"]]
+    data = response.json()
+    logs = []
+    for hit in data.get("hits", {}).get("hits", []):
+        source = hit.get("_source", {})
+        log_line = source.get("full_log") or str(source)
+        logs.append(log_line)
     return '\n'.join(logs)

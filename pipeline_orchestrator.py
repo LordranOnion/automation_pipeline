@@ -24,6 +24,6 @@ def pipeline(nl_attack):
     print("Pipeline completed.")
 
 if __name__ == "__main__":
-    # Example NL attack input
+
     nl_attack = "Simulate a basic reconnaissance attack with main functions being printing the current user, the working directory and the list of the directories."
     pipeline(nl_attack)

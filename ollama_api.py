@@ -18,16 +18,13 @@ def generate_wazuh_rule(nl_attack=None, logs=None):
     else:
         raise ValueError("Must provide nl_attack or logs.")
 
-    # Ollama expects a JSON payload with 'model' and 'prompt'
     payload = {
         "model": OLLAMA_MODEL,
         "prompt": prompt,
-        "stream": False  # If True, handle the response as a stream (optional)
+        "stream": False  
     }
-
     response = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=360)
     response.raise_for_status()
-
     result = response.json()
     rule = result.get("response", "")
     return rule.strip()

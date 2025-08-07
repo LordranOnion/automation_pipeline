@@ -14,21 +14,25 @@ def wazuh_authenticate():
     response.raise_for_status()
     return response.json()["data"]["token"]
 
-def upload_wazuh_rule(rule_xml, token, filename="custom_rules.xml"):
-    url = f"{WAZUH_URL}/rules/files/{filename}"
+def upload_wazuh_rule(rule_xml, token, filename="etc/rules/local_rules.xml"):
+    url = f"{WAZUH_URL}/manager/files"
     headers = {
         "Authorization": f"Bearer {token}",
-        "Content-Type": "application/octet-stream"
+        "Content-Type": "application/json"
     }
-    response = requests.put(url, data=rule_xml.encode('utf-8'), headers=headers, verify=False)
+    payload = {
+        "path": filename,
+        "content": rule_xml
+    }
+    response = requests.put(url, json=payload, headers=headers, verify=False)
     response.raise_for_status()
-    print(f"Rule uploaded to {url}: {response.status_code}")
+    print(f"Rule uploaded successfully to {filename}")
     return response.json()
 
 
 def fetch_wazuh_logs(limit=50):
     indexer_username = "admin"
-    indexer_password = "b7WJQD6gnedEuVQICR*T93cVWW7s7BQu"
+    indexer_password = "PASSWORD"
     
     url = f"{WAZUH_INDEXER_URL}/wazuh-alerts*/_search"
     headers = {

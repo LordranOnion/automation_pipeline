@@ -9,7 +9,6 @@ def pipeline(nl_attack):
     # Step 1: Generate initial rule from NL description
     print("Generating initial rule via LLM...")
     rule_xml = generate_wazuh_rule(nl_attack=nl_attack)
-    print("Generated rule:", rule_xml[:300], '...')
     print("Uploading rule to Wazuh...")
     upload_wazuh_rule(rule_xml, token)
 
@@ -25,5 +24,8 @@ def pipeline(nl_attack):
 
 if __name__ == "__main__":
 
-    nl_attack = "Simulate a basic reconnaissance attack with main functions being printing the current user, the working directory and the list of the directories."
+    nl_attack = input("Enter the natural language description of the initial attack: ").strip()
+    if not nl_attack:
+        print("No attack description provided. Exiting.")
+        exit(1)
     pipeline(nl_attack)

@@ -9,11 +9,13 @@ def generate_wazuh_rule(nl_attack=None, logs=None):
         prompt = (
             f"Given the following attack scenario described in natural language, generate a Wazuh SIEM detection rule (in XML) to detect this attack:\n\n"
             f"Attack Description: {nl_attack}\n"
+            f"The format of the rule should ONLY be a valid Wazuh XML format. It must have these parameters: rule id (over 100000), if_sid, match (command), description (in one line) and group.\n"
         )
     elif logs:
         prompt = (
             f"Given the following Wazuh log entries, generate a new Wazuh SIEM detection rule (in XML) that can detect this or similar attacks in the future:\n\n"
             f"Log Entries:\n{logs}\n"
+            f"The format of the rule should ONLY be a valid Wazuh XML format. It must have these parameters: rule id (over 100000), if_sid, match (command), description (in one line) and group.\n"
         )
     else:
         raise ValueError("Must provide nl_attack or logs.")

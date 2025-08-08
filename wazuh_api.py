@@ -3,7 +3,8 @@ import requests
 import urllib3
 import subprocess
 from requests.auth import HTTPBasicAuth
-from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS, WAZUH_INDEXER_URL, WAZUH_INDEXER_USER, WAZUH_INDEXER_PASS
+from config import WAZUH_URL, WAZUH_USER, WAZUH_PASS, WAZUH_INDEXER_URL
+#, WAZUH_INDEXER_USER, WAZUH_INDEXER_PASS
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -14,25 +15,21 @@ def wazuh_authenticate():
     response.raise_for_status()
     return response.json()["data"]["token"]
 
-def upload_wazuh_rule(rule_xml, token, filename="etc/rules/local_rules.xml"):
-    url = f"{WAZUH_URL}/manager/files"
+def upload_wazuh_rule(rule_xml, token, filename="custom_rules.xml"):
+    url = f"{WAZUH_URL}/rules/files/{filename}"
     headers = {
         "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/octet-stream"
     }
-    payload = {
-        "path": filename,
-        "content": rule_xml
-    }
-    response = requests.put(url, json=payload, headers=headers, verify=False)
+    response = requests.put(url, data=rule_xml.encode('utf-8'), headers=headers, verify=False)
     response.raise_for_status()
-    print(f"Rule uploaded successfully to {filename}")
+    print(f"Rule uploaded to {url}: {response.status_code}")
     return response.json()
 
 
 def fetch_wazuh_logs(limit=50):
     indexer_username = "admin"
-    indexer_password = "PASSWORD"
+    indexer_password = "b7WJQD6gnedEuVQICR*T93cVWW7s7BQu"
     
     url = f"{WAZUH_INDEXER_URL}/wazuh-alerts*/_search"
     headers = {

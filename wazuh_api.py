@@ -10,7 +10,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def wazuh_authenticate():
     url = f"{WAZUH_URL}/security/user/authenticate"
-    # Use HTTP Basic Auth, no JSON body!
     response = requests.post(url, auth=HTTPBasicAuth(WAZUH_USER, WAZUH_PASS), verify=False)
     response.raise_for_status()
     return response.json()["data"]["token"]
